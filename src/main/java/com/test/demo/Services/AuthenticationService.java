@@ -45,7 +45,7 @@ public class AuthenticationService {
 
             // Retrieve user roles and authorities
             String role = user.getRole();
-            Collection<SimpleGrantedAuthority> roles = List.of(new SimpleGrantedAuthority(role));
+            SimpleGrantedAuthority roles = new SimpleGrantedAuthority(role);
 
             // Generate tokens
             String jwtAccessToken = jwtService.generateToken(user, roles);
@@ -75,6 +75,7 @@ public class AuthenticationService {
                         .body("User with this email already exists");
             }
 
+            registerRequest.setRole("USER");
             userServices.save(registerRequest);
 
             return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");

@@ -26,23 +26,17 @@ public class JwtService {
     private UserRepository userRepository;
 
 
-    public String generateToken( User user, Collection<SimpleGrantedAuthority>authorities){
+    public String generateToken( User user, SimpleGrantedAuthority authorities){
         Algorithm algorithm=Algorithm.HMAC256(secretkey.getBytes());
         return JWT.create()
                 .withSubject(user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis()+50*60*1000))
-                .withClaim("roles",authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .withClaim("roles",authorities.getAuthority())
                 .sign(algorithm);
     }
 
 
-    public String generateRefreshToken(User user , Collection<SimpleGrantedAuthority>authorities){
-        Algorithm algorithm=Algorithm.HMAC256(secretkey.getBytes());
-        return JWT.create()
-                .withSubject(user.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis()+70*60*1000))
-                .sign(algorithm);
-    }
+
 
 
 

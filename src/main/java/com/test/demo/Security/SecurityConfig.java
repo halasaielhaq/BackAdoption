@@ -46,11 +46,8 @@ public class SecurityConfig {
                     }}));
         http.authorizeRequests()
                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .requestMatchers("/api/v1/auth/**","/users/login","/users/register").permitAll()
-                .requestMatchers("/api/v1/auth/register").permitAll()
-                .requestMatchers("/api/login").authenticated()
-                .requestMatchers("/api/animals/add").authenticated()
-                .requestMatchers("/adoption-requests/add").authenticated()
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/animals/**").authenticated()
                 .and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())

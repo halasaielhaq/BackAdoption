@@ -2,25 +2,26 @@ package com.test.demo.Controller;
 import com.test.demo.Dto.AnimalDto;
 import com.test.demo.Services.AnimalService;
 import com.test.demo.models.Animal;
+import com.test.demo.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/animals")
 public class AnimalController {
+    private final AnimalRepository animalRepository;
     private final AnimalService animalService;
 
-    @GetMapping("/listOfAnimals")
-    public List<Animal> getAnimals() {
-        return animalService.getAnimals();
+    @GetMapping("/allAnimals")
+    public ResponseEntity<List<Animal>> getAnimals() {
+
+        return ResponseEntity.ok(animalRepository.findAll());
     }
 
     @GetMapping("/{id}")
@@ -39,18 +40,17 @@ public class AnimalController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Animal> addAnimal(@RequestBody @Valid Animal animalDto) {
-        Animal newAnimal = animalService.addAnimal(animalDto);
-        return new ResponseEntity<>(newAnimal, HttpStatus.CREATED);
+    public ResponseEntity<?> addAnimal(@RequestBody AnimalDto animalDto) throws IOException {
+         Animal newAnimal = animalService.addAnimal(animalDto);
+        return ResponseEntity.ok(animalDto);
     }
 
     @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getAnimalImage(@PathVariable Long id) {
+    public ResponseEntity<String> getAnimalImage(@PathVariable Long id) {
         Animal animal = animalService.getAnimalById(id);
-        if (animal != null && animal.getPhoto() != null) {
+        if (animal != null && animal.getPhotoFile() != null) {
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.valueOf(animal.getImageMimeType()));
-            return new ResponseEntity<>(animal.getPhoto(), headers, HttpStatus.OK);
+            return new ResponseEntity<>(animal.getPhotoFile(), headers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @NoArgsConstructor
 @Data
@@ -14,7 +16,7 @@ public class AdoptionRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String date;
+    private Date date;
     private String petName;
     private String firstName;
     private String lastName;
@@ -27,14 +29,10 @@ public class AdoptionRequest {
     private int numberOfPets;
 
 
-    @ManyToOne
-    @JoinColumn(name = "animal_id")
-    private Animal animal;
 
     private String status;
 
     public AdoptionRequest(Animal animal, String status) {
-        this.animal = animal;
         this.status = status;
     }
 
